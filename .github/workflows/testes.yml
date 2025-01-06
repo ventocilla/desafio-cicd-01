@@ -44,35 +44,43 @@ jobs:
           env:
             ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=review-filmes;Username=review;Password=postgrespwd"
 
-    sonarqube:
-      name: Scan com o Sonarqube
-      runs-on: ubuntu-latest
-      steps:
-        - name: Obtendo o código do projeto
-          uses: actions/checkout@v4
-        - name: Setup JDK
-          uses: actions/setup-java@v4
-          with: 
-            java-version: '21'
-            # distribution: 'temurin'
-            distribution: 'adopt'
+    # sonarqube:
+    #   name: Scan com o Sonarqube
+    #   runs-on: ubuntu-latest
+    #   steps:
+    #     - name: Obtendo o código do projeto
+    #       uses: actions/checkout@v4
+    #     - name: Setup JDK
+    #       uses: actions/setup-java@v4
+    #       with: 
+    #         java-version: '21'
+    #         # distribution: 'temurin'
+    #         distribution: 'adopt'
 
-        - name: Setup dotnet
-          uses: actions/setup-dotnet@v4
-          with:
-            dotnet-version: "8.0.300"
+    #     - name: Setup dotnet
+    #       uses: actions/setup-dotnet@v4
+    #       with:
+    #         dotnet-version: "8.0.300"
 
-        - name: Instalação do Sonarqube Scanner
-          run: dotnet tool install --global dotnet-sonarscanner
+    #     - name: Instalação do Sonarqube Scanner
+    #       run: dotnet tool install --global dotnet-sonarscanner
 
-        - name: Build and analysis
-          working-directory: ./src  
-          run: |
-            dotnet sonarscanner begin \
-            /o:"ventocilla" \
-            /k:"ventocilla_filme" \
-            /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.token="7fab1cfd79a5386ab3c5c05865ca680295fa5e6e"
+        # - name: Build and analysis
+        #   working-directory: ./src  
+        #   run: |
+        #     dotnet sonarscanner begin \
+        #     /o:"ventocilla" \
+        #     /k:"ventocilla_filme" \
+        #     /d:sonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+        #     /d:sonar.token=${{ secrets.SONAR_TOKEN }}
 
-            dotnet build Review-Filmes.sln
-            dotnet sonarscanner end /d:sonar.token="7fab1cfd79a5386ab3c5c05865ca680295fa5e6e"
+        #     dotnet build Review-Filmes.sln
+        #     dotnet sonarscanner end /d:sonar.token=${{ secrets.SONAR_TOKEN }}
+
+        # - name: Verificação do Quality Gate
+        #   uses: sonarsource/sonarqube-quality-gate-action@master
+        #   env: 
+        #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        #     SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        #   with: 
+        #     scanMetadataReportFile: ./src/.sonarqube/.sonar/report-task.txt
