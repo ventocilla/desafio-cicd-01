@@ -1,0 +1,29 @@
+# Time --> 53:56
+name: Deploy no kubernetes
+on:
+    workflow_call: 
+
+jobs:
+    deploy:
+        name: "Deploy"
+        runs-on: ubuntu-latest
+        steps:
+            - name: Obtendo o codigo
+              uses: actions/checkout@v4
+
+            - name: Configuração do Context
+              uses: azure/k8s-set-context@v4
+              with:
+                 method: kubeconfig
+                 kubeconfig: ${{ secrets.K8S_CONFIG }}
+
+            - name: Deploy no Kubernetes
+              uses: Azure/k8s-deploy@v5
+              with:
+                manifests: |
+                    k8s/deployment.yaml
+                images: |
+                    vento123/projeto-devops-pro:v${{github.run_number}}
+
+                 
+
